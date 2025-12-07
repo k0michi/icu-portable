@@ -44,7 +44,7 @@ jobs:
         run: |
           cmake --build test/build --config ${{ env.BUILD_TYPE }} --parallel
       - name: Run Tests
-        run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
+        run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --verbose
 
   test-shared:
     name: Test Shared on ${{ matrix.os }}
@@ -80,7 +80,7 @@ jobs:
         run: |
           cmake --build test/build --config ${{ env.BUILD_TYPE }} --parallel
       - name: Run Tests
-        run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
+        run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --verbose
 
   emscripten-test:
     name: Test on emscripten
@@ -108,4 +108,4 @@ jobs:
         run: cmake --build test/build --parallel
 
       - name: Run Tests
-        run: ctest --test-dir test/build --output-on-failure
+        run: ctest --test-dir test/build --verbose
