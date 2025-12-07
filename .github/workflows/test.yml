@@ -11,7 +11,7 @@ env:
 
 jobs:
   test:
-    name: Build on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -49,3 +49,35 @@ jobs:
 
       - name: Run Tests
         run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
+
+  emscripten-test:
+    name: Test on Emscripten (WASM + Node.js)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Emscripten
+        uses: emscripten-core/emsdk@v3
+        with:
+          version: latest
+
+      - name: Configure Main
+        run: |
+          emcmake cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build Main
+        run: cmake --build build --parallel
+
+      - name: Configure Test Project
+        run: |
+          emcmake cmake -S test -B test/build \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DCMAKE_CROSSCOMPILING_EMULATOR=$(which node)
+
+      - name: Build Test Project
+        run: cmake --build test/build --parallel
+
+      - name: Run Tests
+        run: ctest --test-dir test/build --output-on-failure
