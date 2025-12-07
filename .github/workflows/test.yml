@@ -62,14 +62,6 @@ jobs:
         with:
           version: latest
 
-      - name: Configure Main
-        run: |
-          emcmake cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-
-      - name: Build Main
-        run: cmake --build build --parallel
-
       - name: Configure Test Project
         run: |
           emcmake cmake -S test -B test/build \
