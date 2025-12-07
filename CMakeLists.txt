@@ -78,7 +78,6 @@ endfunction()
 
 
 # ========== icuuc ==========
-message(STATUS "Configuring icuuc...")
 read_icu_sources_txt(UC_SRCS "${ICU_SOURCE_DIR}/common/sources.txt" "${ICU_SOURCE_DIR}/common")
 add_library(icuuc ${UC_SRCS} "${ICU_DAT_C_FILE}")
 file(GLOB UC_HEADERS "${ICU_SOURCE_DIR}/common/unicode/*.h")
@@ -86,7 +85,6 @@ target_include_directories(icuuc PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/comm
 target_compile_definitions(icuuc PRIVATE U_COMMON_IMPLEMENTATION)
 
 # ========== icui18n ==========
-message(STATUS "Configuring icui18n...")
 read_icu_sources_txt(I18N_SRCS "${ICU_SOURCE_DIR}/i18n/sources.txt" "${ICU_SOURCE_DIR}/i18n")
 add_library(icui18n ${I18N_SRCS})
 file(GLOB I18N_HEADERS "${ICU_SOURCE_DIR}/i18n/unicode/*.h")
@@ -95,7 +93,6 @@ target_link_libraries(icui18n PUBLIC icuuc)
 target_compile_definitions(icui18n PRIVATE U_I18N_IMPLEMENTATION)
 
 # ========== icuio ==========
-message(STATUS "Configuring icuio...")
 read_icu_sources_txt(IO_SRCS "${ICU_SOURCE_DIR}/io/sources.txt" "${ICU_SOURCE_DIR}/io")
 add_library(icuio ${IO_SRCS})
 file(GLOB IO_HEADERS "${ICU_SOURCE_DIR}/io/unicode/*.h")
@@ -121,5 +118,3 @@ endforeach()
 add_library(ICU::uc ALIAS icuuc)
 add_library(ICU::i18n ALIAS icui18n)
 add_library(ICU::io ALIAS icuio)
-
-message(STATUS "ICU Custom Build Configuration Done.")
