@@ -10,8 +10,8 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  test:
-    name: Test on ${{ matrix.os }}
+  test-static:
+    name: Test Static on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -27,26 +27,58 @@ jobs:
             generator: "Visual Studio 17 2022"
             arch: "-A x64"
             setup_ninja: false
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Ninja
         if: matrix.setup_ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
-
-      - name: Configure Test Project
+      - name: Configure Test Project (Static)
         shell: bash
         run: |
           cmake -S test -B test/build \
             -G "${{ matrix.generator }}" ${{ matrix.arch }} \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DBUILD_SHARED_LIBS=OFF
       - name: Build Test Project
         run: |
           cmake --build test/build --config ${{ env.BUILD_TYPE }} --parallel
+      - name: Run Tests
+        run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
 
+  test-shared:
+    name: Test Shared on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            generator: "Ninja"
+            setup_ninja: true
+          - os: macos-latest
+            generator: "Ninja"
+            setup_ninja: true
+          - os: windows-latest
+            generator: "Visual Studio 17 2022"
+            arch: "-A x64"
+            setup_ninja: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Ninja
+        if: matrix.setup_ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+      - name: Configure Test Project (Shared)
+        shell: bash
+        run: |
+          cmake -S test -B test/build \
+            -G "${{ matrix.generator }}" ${{ matrix.arch }} \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DBUILD_SHARED_LIBS=ON
+      - name: Build Test Project
+        run: |
+          cmake --build test/build --config ${{ env.BUILD_TYPE }} --parallel
       - name: Run Tests
         run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
 
