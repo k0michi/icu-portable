@@ -57,10 +57,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Emscripten
-        uses: emscripten-core/emsdk@v3
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v14
         with:
-          version: latest
+          version: 4.0.22
 
       - name: Configure Test Project
         run: |
