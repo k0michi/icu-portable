@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build-and-test:
+  test:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -35,16 +35,6 @@ jobs:
       - name: Set up Ninja
         if: matrix.setup_ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
-
-      - name: Configure Main
-        shell: bash
-        run: |
-          cmake -S . -B build \
-            -G "${{ matrix.generator }}" ${{ matrix.arch }} \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-
-      - name: Build Main
-        run: cmake --build build --config ${{ env.BUILD_TYPE }} --parallel
 
       - name: Configure Test Project
         shell: bash
