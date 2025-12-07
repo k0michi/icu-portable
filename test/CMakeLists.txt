@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.21)
 project(icu_test LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,8 +24,8 @@ add_test(NAME icu_gtest COMMAND icu_gtest)
 
 # Ensure ICU libraries are output to the same directory as the test executable (for Windows)
 add_custom_command(TARGET icu_gtest POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    $<TARGET_RUNTIME_DLLS:icu_gtest>
+  COMMAND ${CMAKE_COMMAND} -E copy -t
     $<TARGET_FILE_DIR:icu_gtest>
+    $<TARGET_RUNTIME_DLLS:icu_gtest>
   COMMAND_EXPAND_LISTS
 )
