@@ -76,12 +76,15 @@ function(read_icu_sources_txt output_var list_file base_dir)
     set(${output_var} ${files} PARENT_SCOPE)
 endfunction()
 
+# ========== icudata ==========
+add_library(icudata "${ICU_DAT_C_FILE}")
 
 # ========== icuuc ==========
 read_icu_sources_txt(UC_SRCS "${ICU_SOURCE_DIR}/common/sources.txt" "${ICU_SOURCE_DIR}/common")
-add_library(icuuc ${UC_SRCS} "${ICU_DAT_C_FILE}")
+add_library(icuuc ${UC_SRCS})
 file(GLOB UC_HEADERS "${ICU_SOURCE_DIR}/common/unicode/*.h")
 target_include_directories(icuuc PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/common> $<INSTALL_INTERFACE:include>)
+target_link_libraries(icuuc PUBLIC icudata)
 target_compile_definitions(icuuc PRIVATE U_COMMON_IMPLEMENTATION)
 
 # ========== icui18n ==========
@@ -97,8 +100,16 @@ read_icu_sources_txt(IO_SRCS "${ICU_SOURCE_DIR}/io/sources.txt" "${ICU_SOURCE_DI
 add_library(icuio ${IO_SRCS})
 file(GLOB IO_HEADERS "${ICU_SOURCE_DIR}/io/unicode/*.h")
 target_include_directories(icuio PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/io>)
-target_link_libraries(icuio PUBLIC icui18n icuuc)
+target_link_libraries(icuio PUBLIC icui18n)
 target_compile_definitions(icuio PRIVATE U_IO_IMPLEMENTATION)
+
+# ========== icutu ==========
+read_icu_sources_txt(UT_SRCS "${ICU_SOURCE_DIR}/tools/toolutil/sources.txt" "${ICU_SOURCE_DIR}/tools/toolutil")
+add_library(icutu ${UT_SRCS})
+file(GLOB UT_HEADERS "${ICU_SOURCE_DIR}/tools/toolutil/*.h")
+target_include_directories(icutu PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/tools/toolutil>)
+target_link_libraries(icutu PUBLIC icui18n)
+target_compile_definitions(icutu PRIVATE U_TOOLUTIL_IMPLEMENTATION)
 
 # ========== Common settings (MSVC, static) ==========
 foreach(target icuuc icui18n icuio)
@@ -115,6 +126,8 @@ foreach(target icuuc icui18n icuio)
 endforeach()
 
 # ========== Aliases (for find_package(ICU) style) ==========
+add_library(ICU::data ALIAS icudata)
 add_library(ICU::uc ALIAS icuuc)
 add_library(ICU::i18n ALIAS icui18n)
 add_library(ICU::io ALIAS icuio)
+add_library(ICU::tu ALIAS icutu)
