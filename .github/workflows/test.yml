@@ -51,7 +51,7 @@ jobs:
         run: ctest --test-dir test/build -C ${{ env.BUILD_TYPE }} --output-on-failure
 
   emscripten-test:
-    name: Test on Emscripten (WASM + Node.js)
+    name: Test on emscripten
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
