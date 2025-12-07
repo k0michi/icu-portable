@@ -78,12 +78,13 @@ endfunction()
 
 # ========== icudata ==========
 add_library(icudata "${ICU_DAT_C_FILE}")
+target_include_directories(icudata PRIVATE $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/common>)
 
 # ========== icuuc ==========
 read_icu_sources_txt(UC_SRCS "${ICU_SOURCE_DIR}/common/sources.txt" "${ICU_SOURCE_DIR}/common")
 add_library(icuuc ${UC_SRCS})
 file(GLOB UC_HEADERS "${ICU_SOURCE_DIR}/common/unicode/*.h")
-target_include_directories(icuuc PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/common> $<INSTALL_INTERFACE:include>)
+target_include_directories(icuuc PUBLIC $<BUILD_INTERFACE:${ICU_SOURCE_DIR}/common>)
 target_link_libraries(icuuc PUBLIC icudata)
 target_compile_definitions(icuuc PRIVATE U_COMMON_IMPLEMENTATION)
 
