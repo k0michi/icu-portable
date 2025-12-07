@@ -18,6 +18,18 @@ enable_testing()
 
 add_executable(icu_gtest test.cc)
 
+# Ensure ICU libraries are output to the same directory as the test executable
+get_target_property(EXE_DIR icu_gtest RUNTIME_OUTPUT_DIRECTORY)
+if(NOT EXE_DIR)
+  set(EXE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
+
+set_target_properties(icuuc icui18n icuio PROPERTIES
+  LIBRARY_OUTPUT_DIRECTORY "${EXE_DIR}"
+  RUNTIME_OUTPUT_DIRECTORY "${EXE_DIR}"
+  ARCHIVE_OUTPUT_DIRECTORY "${EXE_DIR}"
+)
+
 target_link_libraries(icu_gtest PRIVATE ICU::uc ICU::i18n ICU::io GTest::gtest_main)
 
 add_test(NAME icu_gtest COMMAND icu_gtest)
