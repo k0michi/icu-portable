@@ -19,6 +19,7 @@ message(STATUS "Fetching ICU4C Source...")
 FetchContent_Declare(
     icu_src
     URL "https://github.com/unicode-org/icu/releases/download/release-${ICU_VER}/icu4c-${ICU_VER}-sources.tgz"
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(icu_src)
 set(ICU_SOURCE_DIR "${icu_src_SOURCE_DIR}/source")
@@ -36,6 +37,7 @@ message(STATUS "Fetching ICU4C Prebuilt Data...")
 FetchContent_Declare(
     icu_data
     URL "https://github.com/unicode-org/icu/releases/download/release-${ICU_VER}/icu4c-${ICU_VER}-data-bin-${ICU_ENDIAN_CHAR}.zip"
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(icu_data)
 
